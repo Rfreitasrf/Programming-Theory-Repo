@@ -22,7 +22,6 @@ public class PlayerController : MonoBehaviour
         paddleHinge.motor = motor;
         paddleHinge.useMotor = false;
 
-
     }
 
     // Update is called once per frame

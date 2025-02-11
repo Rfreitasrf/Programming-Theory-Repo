@@ -9,11 +9,11 @@ public class Target : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
+        gameManager = FindAnyObjectByType<GameManager>().GetComponent<GameManager>();
     }
 
     // Update is called once per frame
-    void Update()
+    void Update()   
     {
         
     }
