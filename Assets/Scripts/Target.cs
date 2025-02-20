@@ -2,24 +2,37 @@ using UnityEngine;
 
 public class Target : MonoBehaviour
 {
-    [SerializeField] int pointValue; //valor de cada target
     private GameManager gameManager;
-  
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private int pointMult;
+
+    // ENCAPSULATION
+    private int _pointValue; 
+    public virtual int PointValue 
     {
+        get { return _pointValue; }
+        set 
+        { 
+            if(value >= 5)
+                _pointValue = value;
+            else
+               Debug.LogError("You can't set a number smaller than 5 for PointValue!"); 
+        }    
+    }
+
+    protected virtual void Start()
+    {
+        _pointValue = 5;
+        pointMult = 2;
         gameManager = FindAnyObjectByType<GameManager>().GetComponent<GameManager>();
     }
 
-    // Update is called once per frame
-    void Update()   
+    protected virtual void OnCollisionEnter(Collision collision) 
     {
-        
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        gameManager.UpdateScore(pointValue);
+        if (gameManager.hasPowerUp)
+            gameManager.UpdateScore(PointValue, pointMult);
+            
+        else
+            gameManager.UpdateScore(PointValue);
     }
 }

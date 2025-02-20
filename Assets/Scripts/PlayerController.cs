@@ -1,64 +1,80 @@
 using UnityEngine;
-using UnityEngine.Windows;
 
 
 public class PlayerController : MonoBehaviour
 {
-    private HingeJoint paddleHinge;
+    private HingeJoint flipperHinge;
     [SerializeField] private float torqueForce = 1000;
     [SerializeField] private float motorSpeed = 1000;
+
+    private GameManager gameManager;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        paddleHinge = GetComponent<HingeJoint>();
-
-        JointMotor motor = paddleHinge.motor;
-        motor.force = torqueForce;
-        motor.targetVelocity = 0;
-        motor.freeSpin = false;
-
-        paddleHinge.motor = motor;
-        paddleHinge.useMotor = false;
-
+        PaddleConfig();
+        gameManager = FindAnyObjectByType<GameManager>().GetComponent<GameManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (UnityEngine.Input.GetKey(KeyCode.RightArrow))
-        {
+        if(!gameManager.isGameOver)
+            FlipperControl();
+    }
 
+
+    // ABSTRACTION (All methods down below)
+
+    //Configura as paletas ao iniciar a cena
+    public void PaddleConfig()
+    {
+        flipperHinge = GetComponent<HingeJoint>();
+
+        JointMotor motor = flipperHinge.motor;
+        motor.force = torqueForce;
+        motor.targetVelocity = 0;
+        motor.freeSpin = false;
+
+        flipperHinge.motor = motor;
+        flipperHinge.useMotor = false;
+    }
+
+
+    //Controla ambas as paletas
+    public void FlipperControl()
+    {
+        //Controla paleta direita
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
             if (gameObject.CompareTag("FlipperR"))
             {
-                JointMotor motor = paddleHinge.motor;
+                JointMotor motor = flipperHinge.motor;
                 motor.targetVelocity = motorSpeed;
-                paddleHinge.motor = motor;
-                paddleHinge.useMotor = true;
+
+                flipperHinge.motor = motor;
+                flipperHinge.useMotor = true;
             }
-
-
         }
 
-        else if (UnityEngine.Input.GetKey(KeyCode.LeftArrow))
+        //Controla paleta esquerda
+        else if (Input.GetKey(KeyCode.LeftArrow))
         {
-
             if (gameObject.CompareTag("FlipperL"))
             {
-                JointMotor motor = paddleHinge.motor;
+                JointMotor motor = flipperHinge.motor;
                 motor.targetVelocity = motorSpeed;
-                paddleHinge.motor = motor;
-                paddleHinge.useMotor = true;
+                
+                flipperHinge.motor = motor;
+                flipperHinge.useMotor = true;
             }
         }
 
+        //Peleta volta á posicao inicial
         else
         {
-            paddleHinge.useMotor = false;
-
+            flipperHinge.useMotor = false;
         }
-
-
     }
 }

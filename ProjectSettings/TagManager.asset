@@ -7,6 +7,8 @@ TagManager:
   - FlipperR
   - FlipperL
   - Ball
+  - Powerup
+  - Special Ball
   layers:
   - Default
   - TransparentFX
