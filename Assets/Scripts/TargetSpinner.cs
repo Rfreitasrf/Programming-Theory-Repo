@@ -1,11 +1,13 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 
 public class TargetSpinner : Target // INHERITANCE
 {
-    protected AudioSource targetAudio;
     [SerializeField] protected AudioClip pointSound;
-    [SerializeField] protected TextMeshProUGUI EncouragingText;
+    [SerializeField] protected TextMeshProUGUI encouragingText; 
+    protected AudioSource targetAudio;
+    private Color originalColor;
 
 
     protected override void Start() //POLYMORPHISM (override)
@@ -13,6 +15,7 @@ public class TargetSpinner : Target // INHERITANCE
         base.Start(); // Mantem a inicialização da classe base
         PointValue = 10; // Sobrescreve o valor da classe base
         targetAudio = GetComponent<AudioSource>();
+        originalColor = encouragingText.color;
     }
 
     protected override void OnCollisionEnter(Collision collision) //POLYMORPHISM (override)
@@ -27,7 +30,27 @@ public class TargetSpinner : Target // INHERITANCE
     {
         string[] messages = { "Well Done!", "Nice Shot!", "Awesome!" };
         int messageIndex = Random.Range(0, 3);
-        EncouragingText.text = messages[messageIndex];
+        encouragingText.text = messages[messageIndex];
+
+        StopAllCoroutines();
+        StartCoroutine(BlinkEffect());
+      
+    }
+
+    private IEnumerator BlinkEffect()
+    {
+        
+        encouragingText.color = Color.yellow;
+
+        for (int i = 0; i < 3; i++)
+        {
+            encouragingText.enabled = false;
+            yield return new WaitForSeconds(0.1f);
+            encouragingText.enabled = true;
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        encouragingText.color = originalColor;
     }
 
 }

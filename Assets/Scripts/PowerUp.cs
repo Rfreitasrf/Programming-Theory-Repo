@@ -2,8 +2,12 @@ using UnityEngine;
 
 public class PowerUp : MonoBehaviour
 {
-    GameManager gameManager;
+    private GameManager gameManager;
     private int rotationSpeed = 100;
+
+    /*
+     Esta classe lida com o comportamento dos powerup prefab
+     */
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

@@ -3,10 +3,10 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private HingeJoint flipperHinge;
     [SerializeField] private float torqueForce = 1000;
     [SerializeField] private float motorSpeed = 1000;
-
+    
+    private HingeJoint flipperHinge;
     private GameManager gameManager;
 
 

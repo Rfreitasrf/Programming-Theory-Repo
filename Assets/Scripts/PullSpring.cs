@@ -2,14 +2,15 @@ using UnityEngine;
 
 public class PullSpring : MonoBehaviour
 {
-    [SerializeField] float speed;
-    [SerializeField] float springForce;
+    [SerializeField] private float speed;
+    [SerializeField] private float springForce;
     [SerializeField] private bool isCharged;
+
     private float startPos;
     private float currentPos;
     private float zLimitPos;
-    private Rigidbody springRb;
 
+    private Rigidbody springRb;
     private GameManager gameManager;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -31,7 +32,7 @@ public class PullSpring : MonoBehaviour
     // ABSTRACTION (All methods down below)
 
     //Configura a mola ao iniciar a cena
-    public void SpringConfig()
+    private void SpringConfig()
     {
         startPos = transform.position.z;
         isCharged = false;
@@ -40,7 +41,7 @@ public class PullSpring : MonoBehaviour
     }
 
     //Define todo o comportamento da mola
-    public void SpringBehaviour()
+    private void SpringBehaviour()
     {
         //Recebe o input do player que controla a mola
         float verticalInput = Input.GetAxis("Vertical");

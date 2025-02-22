@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
-    protected GameManager gameManager;
-    [SerializeField] protected GameObject ballParticle;
-    [SerializeField] protected private AudioClip explosionSound;
-
-    protected float zBound = -5.3f;
+    protected float zBound { get; private set; } = - 5.3f; // ENCAPSULATION
+    protected GameManager gameManager { get; private set; } // ENCAPSULATION
+    [SerializeField] private GameObject ballParticle;
+    [SerializeField] private AudioClip explosionSound;
+    
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     protected virtual void Start()
@@ -36,7 +36,7 @@ public class Ball : MonoBehaviour
         audioSource.volume = 1.0f;
         audioSource.Play();
 
-        // Destroi o GameObject depois que o som terminar
+        // Destroi o GameObject temporario depois que o som termina de tocar
         Destroy(tempAudioSoucer, explosionSound.length);
 
         // Instancia a partícula e destrói a bola
@@ -50,10 +50,7 @@ public class Ball : MonoBehaviour
         {
             gameManager.credits -= 1;
             gameManager.creditsText.text = "Credits: " + gameManager.credits;
-
             gameManager.GameOver();
         }
-
     }
-
 }

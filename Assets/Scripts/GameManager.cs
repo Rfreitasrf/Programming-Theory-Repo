@@ -1,63 +1,46 @@
 using UnityEngine;
 using TMPro;
-using Unity.VisualScripting;
 
 public class GameManager : MonoBehaviour
 {
-    public int powerUpScore;
-    public bool hasPowerUp;
-    public float timer = 0.0f;
+    internal int credits; //Melhorar proteção no futuro
+    internal float timer; //Melhorar proteção no futuro
+    [SerializeField] internal TextMeshProUGUI creditsText; //Melhorar proteção no futuro
+    [SerializeField] internal GameObject powerUpInfoText; //Melhorar proteção no futuro
+    [SerializeField] internal bool hasPowerUp; //Melhorar proteção no futuro
+
+    public bool isGameOver { get; private set; } // ENCAPSULATION
+
     private bool paused;
     private int score;
+    private int powerUpScore;
     private int powerUpDuration = 15;
-    private int quantBalls;
     private GameObject[] balls;
     private GameObject TempSpecialBall;
+    private AudioSource gameManagerAudio;
+
     [SerializeField] private TextMeshProUGUI scoreText;
-    [SerializeField] internal GameObject powerUpInfoText;
     [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private GameObject pausePanel;
     [SerializeField] private GameObject ball;
     [SerializeField] private GameObject specialBall;
     [SerializeField] private GameObject powerUpPrefab;
-
-    //Responsavel pelos creditos
-    public bool isGameOver;
-    public int credits;
-    public TextMeshProUGUI creditsText;
+    [SerializeField] private AudioClip creditSound;
     [SerializeField] private GameObject GameOverPanel;
 
-    //Som dos creditos
-    private AudioSource gameManagerAudio;
-    [SerializeField] private AudioClip creditSound;
-
-
+    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-
-        credits = SaveLoadManager.instance.creditsAvalible;
-        creditsText.text = "Credits: " + credits;
-
-        //Acessa audio Source no Game Manager
-        gameManagerAudio = GetComponent<AudioSource>();
-
-        //Verifica quantas bolas há em jogo no comeco do jogo
-        CheckQuantBalls();
-      
-        scoreText.text = "Score: " + score;
-
-        //Previne o jogo de comecar em pausa
-        Time.timeScale = 1;
+        StartGameConfig();   
     }
 
     // Update is called once per frame
     void Update()
     { 
-
         CreditManager();
 
-        //verifica se o player tem power up para iniciar o contador
+        //verifica se o player coletou o power up para iniciar o contador
         if (hasPowerUp)
             PowerUpTimer(); 
         
@@ -75,14 +58,31 @@ public class GameManager : MonoBehaviour
 
     // ABSTRACTION (All methods down below)
 
+    //Configuracao inicial do jogo
+    private void StartGameConfig()
+    {
+        credits = SaveLoadManager.instance.creditsAvalible;
+        creditsText.text = "Credits: " + credits;
+
+        //Acessa audio Source no Game Manager
+        gameManagerAudio = GetComponent<AudioSource>();
+
+        //Verifica quantas bolas há em jogo no comeco do jogo
+        CheckQuantBalls();
+
+        scoreText.text = "Score: " + score;
+
+        //Previne o jogo de comecar em pausa
+        Time.timeScale = 1;
+    }
+
     //Verifica quantas bolas há em jogo atualmente
     private void CheckQuantBalls()
     {
         //Verifica quantas bolas há em jogo atualmente
         balls = GameObject.FindGameObjectsWithTag("Ball");
-        quantBalls = balls.Length;
-
-        if (quantBalls < 1)
+        
+        if (balls.Length < 1)
         {
             //chama Metodo que cria uma nova bola no ponto inicial 
             NewBall();
@@ -122,9 +122,6 @@ public class GameManager : MonoBehaviour
             Instantiate(specialBall, ballPos, specialBall.transform.rotation);
 
             powerUpInfoText.SetActive(true);
-
-            //Invoke(nameof(ResetPowerUp), powerUpDuration);
-
         }
         else
         {
@@ -132,7 +129,6 @@ public class GameManager : MonoBehaviour
             Vector3 ballPos = new Vector3(2.8f, 0.35f, -1.0f);
             Instantiate(ball, ballPos, ball.transform.rotation);
         }
-
     }
 
     //Gerencia a pausa do jogo
@@ -150,8 +146,6 @@ public class GameManager : MonoBehaviour
             pausePanel.SetActive(false);
             Time.timeScale = 1;
         }
-
-    
     }
 
     //Reseta powerup to false e remove bola especial
@@ -165,6 +159,7 @@ public class GameManager : MonoBehaviour
 
             SpecialBall temp = TempSpecialBall.GetComponent<SpecialBall>();
             temp.DestroyBall();
+            timer = 0.0f;
             hasPowerUp = false;
         }   
     }
@@ -180,17 +175,15 @@ public class GameManager : MonoBehaviour
         Instantiate(powerUpPrefab, powerUpPos, powerUpPrefab.transform.rotation);
     }
 
+    //Define um tempo de duração do PowerUp
     private void PowerUpTimer()
     {
-
         timer += Time.deltaTime;
         timerText.text = "Timer: " + Mathf.Round(powerUpDuration - timer);
 
         if (timer >= powerUpDuration)
         {
-
             Debug.Log("Fim do POWER UP");
-            timer = 0.0f;
             ResetPowerUp();
         }
     }
@@ -219,6 +212,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    //Retoma o jogo apos Game Over e player colocar credito
     public void ResumeGame()
     {
         if (credits > 0)
@@ -233,5 +227,4 @@ public class GameManager : MonoBehaviour
             StartCoroutine(menuhandler.BlinkEffect());
         }
     }
-
 }

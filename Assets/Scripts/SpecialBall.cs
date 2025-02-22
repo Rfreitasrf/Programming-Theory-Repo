@@ -3,24 +3,23 @@ using UnityEngine;
 
 public class SpecialBall : Ball // INHERITANCE
 {
-    Rigidbody rB;
-    int pullForceMin = 30;
-    int pullForceMax = 51;
-    //bool isInGame;
-
+    private Rigidbody rB;
+    private int pullForceMin = 30;
+    private int pullForceMax = 51;
+    
     protected override void Start()
     {
         base.Start();
         BallInGame();
     }
 
-
     // Update is called once per frame
     protected override void Update()
     {
         if (transform.position.z < zBound)
         {
-            DestroyBall();       
+            DestroyBall();
+            //gameManager.ResetPowerUp();
         }
     }
 
@@ -38,7 +37,6 @@ public class SpecialBall : Ball // INHERITANCE
         gameManager.powerUpInfoText.SetActive(false);
         gameManager.timer = 0.0f;
         gameManager.hasPowerUp = false;
-
-
     }
+
 }

@@ -7,12 +7,11 @@ using UnityEngine.SceneManagement;
 
 public class SaveLoadManager : MonoBehaviour
 {
-    public static SaveLoadManager instance;
-
-    public int creditsAvalible;
-    [SerializeField] public TextMeshProUGUI creditsAvalibleText;
-
-    public string path;
+    internal int creditsAvalible;
+    internal static SaveLoadManager instance; 
+    
+    [SerializeField] internal TextMeshProUGUI creditsAvalibleText;
+    [SerializeField] private string path;
 
 
     private void Awake()

@@ -3,8 +3,6 @@ using UnityEngine.SceneManagement;
 using UnityEditor;
 using TMPro;
 
-
-
 #if UNITY_EDITOR
 using UnityEngine;
 #endif
@@ -14,12 +12,12 @@ using UnityEngine;
  */
 public class MenuUIHandler : MonoBehaviour
 {
-    private GameManager gameManager;
-    [SerializeField] private TextMeshProUGUI creditInfoText;
     private Color highlightColor = Color.red;
     private Color originalColor;
+    private GameManager gameManager;
     private AudioSource menuUIHandlerAudio;
     [SerializeField] private AudioClip creditSound;
+    [SerializeField] private TextMeshProUGUI creditInfoText;
 
 
     private void Start()
@@ -49,9 +47,17 @@ public class MenuUIHandler : MonoBehaviour
 
     public void MainMenu()
     {
-        gameManager = FindAnyObjectByType<GameManager>().GetComponent<GameManager>();
-        SaveLoadManager.instance.creditsAvalible = gameManager.credits;
-        SceneManager.LoadScene(0);
+        gameManager = FindAnyObjectByType<GameManager>();
+
+        if (gameManager != null)
+        {
+            gameManager = FindAnyObjectByType<GameManager>().GetComponent<GameManager>();
+            SaveLoadManager.instance.creditsAvalible = gameManager.credits;
+            
+            SceneManager.LoadScene(0);
+        }
+        else
+            SceneManager.LoadScene(0);
     }
 
     public void BestPlayersList()
@@ -62,7 +68,6 @@ public class MenuUIHandler : MonoBehaviour
     //Persiste o dado no HD e sai do jogo
     public void Exit()
     {
-        
         SaveLoadManager.instance.SaveDatas(SaveLoadManager.instance.creditsAvalible);
 
 #if UNITY_EDITOR
@@ -91,7 +96,6 @@ public class MenuUIHandler : MonoBehaviour
             
             Debug.Log($"1 crédito foi inserido: {SaveLoadManager.instance.creditsAvalible}");
         }
-        
     }
 
     public IEnumerator BlinkEffect()
@@ -108,6 +112,5 @@ public class MenuUIHandler : MonoBehaviour
 
         creditInfoText.color = originalColor;
     }
-
 
 }
